@@ -1,0 +1,154 @@
+name: Reusable Code Formatter
+
+on:
+  workflow_call:
+    inputs:
+      package-manager:
+        description: "Package manager to use (npm, yarn, pnpm)"
+        required: true
+        type: string
+      format-check-command:
+        description: "Command to check formatting"
+        required: true
+        type: string
+      format-fix-command:
+        description: "Command to format code"
+        required: true
+        type: string
+
+    secrets:
+      GITHUB_TOKEN:
+        description: "GitHub token for authentication"
+        required: true
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  format-check:
+    name: Format Check
+    runs-on: ubuntu-latest
+    outputs:
+      needs-format: ${{ steps.check.outputs.needs-format }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v5
+        with:
+          node-version: "20"
+          registry-url: "https://registry.npmjs.org"
+
+      - name: Cache dependencies
+        uses: actions/cache@v4
+        with:
+          path: "**/node_modules"
+          key: ${{ runner.os }}-${{ inputs.package-manager }}-${{ hashFiles('**/package-lock.json', '**/yarn.lock', '**/pnpm-lock.yaml') }}
+
+      - name: Install dependencies
+        run: |
+          set -e
+          if [ "${{ inputs.package-manager }}" = "pnpm" ]; then
+            echo "Installing pnpm and dependencies..."
+            npm install -g pnpm
+            pnpm install --frozen-lockfile
+          elif [ "${{ inputs.package-manager }}" = "yarn" ]; then
+            echo "Installing yarn and dependencies..."
+            npm install -g yarn
+            yarn install --frozen-lockfile
+          else
+            echo "Installing npm dependencies..."
+            npm ci
+          fi
+
+      - name: Check formatting
+        id: check
+        run: |
+          if ${{ inputs.format-check-command }}; then
+            echo "Code is properly formatted."
+            echo "needs-format=false" >> $GITHUB_OUTPUT
+          else
+            echo "Formatting issues found."
+            echo "needs-format=true" >> $GITHUB_OUTPUT
+          fi
+
+  format:
+    name: Apply Formatting
+    needs: format-check
+    if: needs.format-check.outputs.needs-format == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v5
+        with:
+          node-version: "20"
+          registry-url: "https://registry.npmjs.org"
+
+      - name: Cache dependencies
+        uses: actions/cache@v4
+        with:
+          path: "**/node_modules"
+          key: ${{ runner.os }}-${{ inputs.package-manager }}-${{ hashFiles('**/package-lock.json', '**/yarn.lock', '**/pnpm-lock.yaml') }}
+
+      - name: Install dependencies
+        run: |
+          set -e
+          if [ "${{ inputs.package-manager }}" = "pnpm" ]; then
+            echo "Installing pnpm and dependencies..."
+            npm install -g pnpm
+            pnpm install --frozen-lockfile
+          elif [ "${{ inputs.package-manager }}" = "yarn" ]; then
+            echo "Installing yarn and dependencies..."
+            npm install -g yarn
+            yarn install --frozen-lockfile
+          else
+            echo "Installing npm dependencies..."
+            npm ci
+          fi
+
+      - name: Run format and commit changes
+        run: |
+          set -e
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git config --global user.name "github-actions[bot]"
+          
+          # Run formatting command
+          ${{ inputs.format-fix-command }}
+          
+          # Check if there are any changes
+          if git diff --quiet; then
+            echo "No files changed, skipping commit."
+          else
+            # Get the list of changed files
+            CHANGED_FILES=$(git diff --name-only)
+            echo "Changed files:"
+            echo "$CHANGED_FILES"
+            
+            git add .
+            git commit -m "Format code automatically" -m "Changed files:" -m "$CHANGED_FILES"
+            
+            # Push to the appropriate branch with error handling
+            if [ "${{ github.event_name }}" = "pull_request" ]; then
+              echo "Pushing to PR branch: ${{ github.head_ref }}"
+              git push origin ${{ github.head_ref }} || {
+                echo "Failed to push to PR branch, retrying..."
+                sleep 2
+                git push origin ${{ github.head_ref }}
+              }
+            else
+              echo "Pushing to branch: ${{ github.ref_name }}"
+              git push origin ${{ github.ref_name }} || {
+                echo "Failed to push to branch, retrying..."
+                sleep 2
+                git push origin ${{ github.ref_name }}
+              }
+            fi
+            echo "Successfully pushed formatting changes."
+          fi
