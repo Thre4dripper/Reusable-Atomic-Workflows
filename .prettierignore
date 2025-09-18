@@ -58,3 +58,6 @@ Thumbs.db
 # Documentation build artifacts
 docs/_build/
 site/
+
+# Workflow files
+.github/workflows/**
