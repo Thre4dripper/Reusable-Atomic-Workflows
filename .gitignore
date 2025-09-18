@@ -28,14 +28,13 @@ node_modules/
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+pnpm-debug.log*
 
-# Python cache (if any examples use Python)
-__pycache__/
-*.py[cod]
-*$py.class
-*.egg-info/
+# Build outputs
 dist/
 build/
+*.tgz
+*.tar.gz
 
 # Local environment files
 .env
@@ -44,3 +43,11 @@ build/
 
 # IDE specific files
 *.code-workspace
+
+# TypeScript specific
+*.tsbuildinfo
+.eslintcache
+
+# Coverage reports
+coverage/
+*.lcov
