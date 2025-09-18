@@ -35,23 +35,22 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v5
-        with:
-          node-version: "20"
-          registry-url: "https://registry.npmjs.org"
-
       - name: Setup pnpm
         if: inputs.package-manager == 'pnpm'
         uses: pnpm/action-setup@v4
         with:
           version: latest
 
-      - name: Cache dependencies
-        uses: actions/cache@v4
+      - name: Setup Node.js
+        uses: actions/setup-node@v5
         with:
-          path: "**/node_modules"
-          key: ${{ runner.os }}-${{ inputs.package-manager }}-${{ hashFiles('**/package-lock.json', '**/yarn.lock', '**/pnpm-lock.yaml') }}
+          node-version: "20"
+          registry-url: "https://registry.npmjs.org"
+          cache: ${{ inputs.package-manager == 'npm' && 'npm' || inputs.package-manager == 'yarn' && 'yarn' || inputs.package-manager == 'pnpm' && 'pnpm' || '' }}
+          cache-dependency-path: |
+            package-lock.json
+            yarn.lock
+            pnpm-lock.yaml
 
       - name: Install dependencies
         run: |
@@ -90,23 +89,22 @@ jobs:
         with:
           token: ${{ secrets.workflow-token }}
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v5
-        with:
-          node-version: "20"
-          registry-url: "https://registry.npmjs.org"
-
       - name: Setup pnpm
         if: inputs.package-manager == 'pnpm'
         uses: pnpm/action-setup@v4
         with:
           version: latest
 
-      - name: Cache dependencies
-        uses: actions/cache@v4
+      - name: Setup Node.js
+        uses: actions/setup-node@v5
         with:
-          path: "**/node_modules"
-          key: ${{ runner.os }}-${{ inputs.package-manager }}-${{ hashFiles('**/package-lock.json', '**/yarn.lock', '**/pnpm-lock.yaml') }}
+          node-version: "20"
+          registry-url: "https://registry.npmjs.org"
+          cache: ${{ inputs.package-manager == 'npm' && 'npm' || inputs.package-manager == 'yarn' && 'yarn' || inputs.package-manager == 'pnpm' && 'pnpm' || '' }}
+          cache-dependency-path: |
+            package-lock.json
+            yarn.lock
+            pnpm-lock.yaml
 
       - name: Install dependencies
         run: |
