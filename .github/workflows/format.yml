@@ -17,7 +17,7 @@ on:
         type: string
 
     secrets:
-      GITHUB_TOKEN:
+      workflow-token:
         description: "GitHub token for authentication"
         required: true
 
@@ -83,7 +83,7 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}
+          token: ${{ secrets.workflow-token }}
 
       - name: Setup Node.js
         uses: actions/setup-node@v5
