@@ -1,0 +1,71 @@
+name: Reusable Lint Checker
+
+on:
+  workflow_call:
+    inputs:
+      package-manager:
+        description: "Package manager to use (npm, yarn, pnpm)"
+        required: true
+        type: string
+      lint-check-command:
+        description: "Command to check linting"
+        required: true
+        type: string
+
+    secrets:
+      workflow-token:
+        description: "GitHub token for authentication"
+        required: true
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  lint-check:
+    name: Lint Check
+    runs-on: ubuntu-latest
+    outputs:
+      needs-lint: ${{ steps.check.outputs.needs-lint }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v5
+        with:
+          node-version: "20"
+          registry-url: "https://registry.npmjs.org"
+
+      - name: Cache dependencies
+        uses: actions/cache@v4
+        with:
+          path: "**/node_modules"
+          key: ${{ runner.os }}-${{ inputs.package-manager }}-${{ hashFiles('**/package-lock.json', '**/yarn.lock', '**/pnpm-lock.yaml') }}
+
+      - name: Install dependencies
+        run: |
+          set -e
+          if [ "${{ inputs.package-manager }}" = "pnpm" ]; then
+            echo "Installing pnpm and dependencies..."
+            npm install -g pnpm
+            pnpm install --frozen-lockfile
+          elif [ "${{ inputs.package-manager }}" = "yarn" ]; then
+            echo "Installing yarn and dependencies..."
+            npm install -g yarn
+            yarn install --frozen-lockfile
+          else
+            echo "Installing npm dependencies..."
+            npm ci
+          fi
+
+      - name: Check linting
+        id: check
+        run: |
+          if ${{ inputs.lint-check-command }}; then
+            echo "Code is properly linted."
+            echo "needs-lint=false" >> $GITHUB_OUTPUT
+          else
+            echo "Linting issues found."
+            echo "needs-lint=true" >> $GITHUB_OUTPUT
+          fi
