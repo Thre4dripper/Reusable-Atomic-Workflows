@@ -1,6 +1,8 @@
 # Contributing to Reusable Workflows
 
-Thank you for your interest in contributing to this project! 🎉 We welcome contributions from everyone, whether you're fixing bugs, adding new workflows, improving documentation, or suggesting enhancements.
+Thank you for your interest in contributing to this project! 🎉 We welcome
+contributions from everyone, whether you're fixing bugs, adding new workflows,
+improving documentation, or suggesting enhancements.
 
 ## 📋 Table of Contents
 
@@ -14,14 +16,18 @@ Thank you for your interest in contributing to this project! 🎉 We welcome con
 
 ## 📜 Code of Conduct
 
-This project and everyone participating in it is governed by our [Code of Conduct](CODE_OF_CONDUCT.md). By participating, you are expected to uphold this code. Please report unacceptable behavior to [your-email@example.com].
+This project and everyone participating in it is governed by our
+[Code of Conduct](CODE_OF_CONDUCT.md). By participating, you are expected to
+uphold this code. Please report unacceptable behavior to
+[your-email@example.com].
 
 ## 🤝 How Can I Contribute?
 
 ### 🐛 Reporting Bugs
 
 - Use the [Bug Report template](.github/ISSUE_TEMPLATE/bug_report.md)
-- Check if the issue already exists in our [Issues](https://github.com/Thre4dripper/Reusable-Workflows/issues)
+- Check if the issue already exists in our
+  [Issues](https://github.com/Thre4dripper/Reusable-Workflows/issues)
 - Provide clear steps to reproduce the issue
 - Include relevant logs, screenshots, or error messages
 
@@ -57,17 +63,20 @@ This project and everyone participating in it is governed by our [Code of Conduc
 ### Development Setup
 
 1. **Fork the repository**
+
    ```bash
    # Click the "Fork" button on GitHub
    ```
 
 2. **Clone your fork**
+
    ```bash
    git clone https://github.com/YOUR_USERNAME/Reusable-Workflows.git
    cd Reusable-Workflows
    ```
 
 3. **Create a branch**
+
    ```bash
    git checkout -b feature/your-feature-name
    # or
@@ -79,6 +88,7 @@ This project and everyone participating in it is governed by our [Code of Conduc
    - Test your changes thoroughly
 
 5. **Commit your changes**
+
    ```bash
    git add .
    git commit -m "feat: add new deployment workflow"
@@ -86,12 +96,14 @@ This project and everyone participating in it is governed by our [Code of Conduc
    ```
 
 6. **Push to your fork**
+
    ```bash
    git push origin feature/your-feature-name
    ```
 
 7. **Create a Pull Request**
-   - Use our [PR template](.github/PULL_REQUEST_TEMPLATE/pull_request_template.md)
+   - Use our
+     [PR template](.github/PULL_REQUEST_TEMPLATE/pull_request_template.md)
    - Link related issues
    - Provide clear description of changes
 
@@ -117,6 +129,7 @@ workflows/
 ### Workflow Best Practices
 
 #### 1. **Input Parameters**
+
 ```yaml
 on:
   workflow_call:
@@ -137,11 +150,13 @@ on:
 ```
 
 #### 2. **Documentation**
+
 - Add clear descriptions for all inputs and secrets
 - Include usage examples
 - Document expected outputs
 
 #### 3. **Error Handling**
+
 ```yaml
 - name: Deploy with error handling
   run: |
@@ -152,12 +167,14 @@ on:
 ```
 
 #### 4. **Security Considerations**
+
 - Never log secrets
 - Use least privilege principle
 - Validate inputs
 - Use official actions when possible
 
 #### 5. **Performance**
+
 - Cache dependencies when possible
 - Use matrix builds for parallel execution
 - Optimize for speed and resource usage
@@ -194,11 +211,11 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       result: ${{ steps.step-id.outputs.result }}
-    
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-      
+
       - name: Main step
         id: step-id
         run: |
@@ -211,6 +228,7 @@ jobs:
 ### Pull Request Guidelines
 
 #### Before Submitting
+
 - [ ] Test your workflow in a real repository
 - [ ] Update documentation if needed
 - [ ] Add examples if creating new workflows
@@ -218,18 +236,23 @@ jobs:
 - [ ] Ensure no breaking changes (or clearly document them)
 
 #### PR Title Format
+
 Use [Conventional Commits](https://www.conventionalcommits.org/) format:
+
 - `feat: add new security scanning workflow`
 - `fix: resolve issue with docker build workflow`
 - `docs: update README with new examples`
 - `refactor: improve error handling in deployment workflow`
 
 #### PR Description Template
+
 ```markdown
 ## Description
+
 Brief description of changes
 
 ## Type of Change
+
 - [ ] Bug fix
 - [ ] New workflow
 - [ ] Enhancement
@@ -237,11 +260,13 @@ Brief description of changes
 - [ ] Breaking change
 
 ## Testing
+
 - [ ] Tested in development environment
 - [ ] Added/updated tests
 - [ ] Tested edge cases
 
 ## Checklist
+
 - [ ] Code follows project guidelines
 - [ ] Self-review completed
 - [ ] Documentation updated
@@ -250,7 +275,8 @@ Brief description of changes
 
 ### Commit Message Guidelines
 
-We follow the [Conventional Commits](https://www.conventionalcommits.org/) specification:
+We follow the [Conventional Commits](https://www.conventionalcommits.org/)
+specification:
 
 ```
 <type>[optional scope]: <description>
@@ -261,6 +287,7 @@ We follow the [Conventional Commits](https://www.conventionalcommits.org/) speci
 ```
 
 **Types:**
+
 - `feat`: New features or workflows
 - `fix`: Bug fixes
 - `docs`: Documentation changes
@@ -270,6 +297,7 @@ We follow the [Conventional Commits](https://www.conventionalcommits.org/) speci
 - `chore`: Maintenance tasks
 
 **Examples:**
+
 ```
 feat(ci): add Node.js testing workflow
 fix(deploy): resolve environment variable issue
@@ -303,6 +331,7 @@ docs: update README with usage examples
 ## 🌟 Recognition
 
 Contributors will be:
+
 - Listed in our Contributors section
 - Mentioned in release notes for significant contributions
 - Given credit in workflow documentation
@@ -311,8 +340,11 @@ Contributors will be:
 
 ### Getting Help
 
-- 🐛 [Issues](https://github.com/Thre4dripper/Reusable-Workflows/issues) - Bug reports and feature requests
-- 💬 [Discussions](https://github.com/Thre4dripper/Reusable-Workflows/discussions) - General questions and community chat
+- 🐛 [Issues](https://github.com/Thre4dripper/Reusable-Workflows/issues) - Bug
+  reports and feature requests
+- 💬
+  [Discussions](https://github.com/Thre4dripper/Reusable-Workflows/discussions) -
+  General questions and community chat
 - 📧 Email: [your-email@example.com] - Private matters
 
 ### Stay Updated
@@ -323,7 +355,8 @@ Contributors will be:
 
 ## 📄 License
 
-By contributing, you agree that your contributions will be licensed under the same [MIT License](LICENSE) that covers the project.
+By contributing, you agree that your contributions will be licensed under the
+same [MIT License](LICENSE) that covers the project.
 
 ---
 
@@ -331,6 +364,7 @@ Thank you for contributing to Reusable Workflows! 🚀
 
 <div align="center">
 
-**Questions? Feel free to ask in [Discussions](https://github.com/Thre4dripper/Reusable-Workflows/discussions)!**
+**Questions? Feel free to ask in
+[Discussions](https://github.com/Thre4dripper/Reusable-Workflows/discussions)!**
 
 </div>
