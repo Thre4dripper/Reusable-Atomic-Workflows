@@ -1,0 +1,70 @@
+name: Reusable Unit Tests Worker
+
+on:
+  workflow_call:
+    inputs:
+      package-manager:
+        description: "Package manager to use (npm, yarn, pnpm)"
+        required: true
+        type: string
+      test-command:
+        description: "Command to run tests"
+        required: true
+        type: string
+      coverage-command:
+        description: "Command to generate coverage report"
+        required: false
+        type: string
+
+    secrets:
+      workflow-token:
+        description: "GitHub token for authentication"
+        required: true
+
+permissions:
+  contents: read
+
+jobs:
+  run-tests:
+    name: Run Unit Tests
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.workflow-token }}
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v5
+        with:
+          node-version: "20"
+          registry-url: "https://registry.npmjs.org"
+
+      - name: Cache dependencies
+        uses: actions/cache@v4
+        with:
+          path: "**/node_modules"
+          key: ${{ runner.os }}-${{ inputs.package-manager }}-${{ hashFiles('**/package-lock.json', '**/yarn.lock', '**/pnpm-lock.yaml') }}
+
+      - name: Install dependencies
+        run: |
+          set -e
+          if [ "${{ inputs.package-manager }}" = "pnpm" ]; then
+            echo "Installing pnpm and dependencies..."
+            npm install -g pnpm
+            pnpm install --frozen-lockfile
+          elif [ "${{ inputs.package-manager }}" = "yarn" ]; then
+            echo "Installing yarn and dependencies..."
+            npm install -g yarn
+            yarn install --frozen-lockfile
+          else
+            echo "Installing npm dependencies..."
+            npm ci
+          fi
+
+      - name: Run tests
+        run: ${{ inputs.test-command }}
+
+      - name: Generate coverage report
+        if: inputs.coverage-command != ''
+        run: ${{ inputs.coverage-command }}
