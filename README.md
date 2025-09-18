@@ -1,8 +1,9 @@
 # 🔄 Reusable GitHub Actions Workflows
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![GitHub stars](https://img.shields.io/github/stars/Thre4dripper/Reusable-Workflows?style=social)](https://github.com/Thre4dripper/Reusable-Workflows/stargazers)
-[![GitHub forks](https://img.shields.io/github/forks/Thre4dripper/Reusable-Workflows?style=social)](https://github.com/Thre4dripper/Reusable-Workflows/network/members)
+
+[![GitHub stars](https://img.shields.io/github/stars/Thre4dripper/Reusable-Atomic-Workflows?style=social)](https://github.com/Thre4dripper/Reusable-Atomic-Workflows/stargazers)
+[![GitHub forks](https://img.shields.io/github/forks/Thre4dripper/Reusable-Atomic-Workflows?style=social)](https://github.com/Thre4dripper/Reusable-Atomic-Workflows/network/members)
 
 A comprehensive collection of reusable GitHub Actions workflows designed to
 streamline CI/CD processes across projects. These workflows are built with best
@@ -123,7 +124,7 @@ on:
 
 jobs:
   build-and-test:
-    uses: Thre4dripper/Reusable-Workflows/.github/workflows/build-test-lint.yml@main
+  uses: Thre4dripper/Reusable-Atomic-Workflows/.github/workflows/build-test-lint.yml@main
     with:
       node-version: '18'
       run-tests: true
@@ -140,7 +141,7 @@ Each workflow accepts various input parameters to customize behavior:
 # Example with all common parameters
 jobs:
   my-job:
-    uses: Thre4dripper/Reusable-Workflows/.github/workflows/[workflow-name].yml@main
+  uses: Thre4dripper/Reusable-Atomic-Workflows/.github/workflows/[workflow-name].yml@main
     with:
       # Environment settings
       environment: 'production'
@@ -174,7 +175,7 @@ on:
 
 jobs:
   test-and-build:
-    uses: Thre4dripper/Reusable-Workflows/.github/workflows/build-test-lint.yml@main
+  uses: Thre4dripper/Reusable-Atomic-Workflows/.github/workflows/build-test-lint.yml@main
     with:
       node-version: '18'
       package-manager: 'npm'
@@ -196,7 +197,7 @@ on:
 
 jobs:
   docker-build:
-    uses: Thre4dripper/Reusable-Workflows/.github/workflows/docker-publish.yml@main
+  uses: Thre4dripper/Reusable-Atomic-Workflows/.github/workflows/docker-publish.yml@main
     with:
       image-name: 'my-app'
       platforms: 'linux/amd64,linux/arm64'
@@ -218,7 +219,7 @@ on:
 
 jobs:
   security-check:
-    uses: Thre4dripper/Reusable-Workflows/.github/workflows/security-scan.yml@main
+  uses: Thre4dripper/Reusable-Atomic-Workflows/.github/workflows/security-scan.yml@main
     with:
       scan-type: 'full'
       fail-on-severity: 'high'
@@ -266,9 +267,9 @@ for details.
 
 - 📖 **Documentation**: Check our workflow-specific README files
 - 🐛 **Issues**:
-  [Report bugs or request features](https://github.com/Thre4dripper/Reusable-Workflows/issues)
+  [Report bugs or request features](https://github.com/Thre4dripper/Reusable-Atomic-Workflows/issues)
 - 💬 **Discussions**:
-  [Join community discussions](https://github.com/Thre4dripper/Reusable-Workflows/discussions)
+  [Join community discussions](https://github.com/Thre4dripper/Reusable-Atomic-Workflows/discussions)
 - ⭐ **Star the repo** if you find it useful!
 
 ## 🙏 Acknowledgments

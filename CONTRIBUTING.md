@@ -1,4 +1,4 @@
-# Contributing to Reusable Workflows
+# Contributing to Reusable Atomic Workflows
 
 Thank you for your interest in contributing to this project! 🎉 We welcome
 contributions from everyone, whether you're fixing bugs, adding new workflows,
@@ -27,7 +27,7 @@ uphold this code. Please report unacceptable behavior to
 
 - Use the [Bug Report template](.github/ISSUE_TEMPLATE/bug_report.md)
 - Check if the issue already exists in our
-  [Issues](https://github.com/Thre4dripper/Reusable-Workflows/issues)
+  [Issues](https://github.com/Thre4dripper/Reusable-Atomic-Workflows/issues)
 - Provide clear steps to reproduce the issue
 - Include relevant logs, screenshots, or error messages
 
@@ -41,7 +41,7 @@ uphold this code. Please report unacceptable behavior to
 
 - Fix bugs or implement new features
 - Improve existing workflows
-- Add new reusable workflows
+- Add new reusable atomic workflows
 - Enhance documentation
 
 ### 📝 Improving Documentation
@@ -71,8 +71,8 @@ uphold this code. Please report unacceptable behavior to
 2. **Clone your fork**
 
    ```bash
-   git clone https://github.com/YOUR_USERNAME/Reusable-Workflows.git
-   cd Reusable-Workflows
+  git clone https://github.com/YOUR_USERNAME/Reusable-Atomic-Workflows.git
+  cd Reusable-Atomic-Workflows
    ```
 
 3. **Create a branch**

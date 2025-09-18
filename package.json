@@ -1,5 +1,5 @@
 {
-  "name": "reusable-workflows",
+  "name": "reusable-atomic-workflows",
   "version": "1.0.0",
   "description": "A collection of reusable GitHub Actions workflows with automatic documentation generation",
   "main": "dist/index.js",

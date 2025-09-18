@@ -1,6 +1,6 @@
 # 🤝 Code of Conduct
 
-Thank you for being part of the **Reusable Workflows** community! 🎉  
+Thank you for being part of the **Reusable Atomic Workflows** community! 🎉  
 We’re committed to creating a welcoming, safe, and inclusive environment for everyone.
 
 This Code of Conduct outlines the expectations for behavior within our community.
@@ -57,10 +57,11 @@ and also applies when representing the project in public spaces.
 
 ## 🚨 Reporting Issues
 
+
 If you experience or witness unacceptable behavior:  
 
-- Please [open an issue](https://github.com/Thre4dripper/Reusable-Workflows/issues) in this repository.  
-- For sensitive matters, you can also start a private discussion using the [Discussions tab](https://github.com/Thre4dripper/Reusable-Workflows/discussions).  
+- Please [open an issue](https://github.com/Thre4dripper/Reusable-Atomic-Workflows/issues) in this repository.  
+- For sensitive matters, you can also start a private discussion using the [Discussions tab](https://github.com/Thre4dripper/Reusable-Atomic-Workflows/discussions).
 
 All reports will be reviewed and addressed promptly and fairly.  
 
