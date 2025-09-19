@@ -45,13 +45,33 @@ runs:
           echo "📦 Detected npm (package-lock.json or default)"
         fi
 
+    - name: Extract pnpm version
+      id: pnpm-version
+      if: steps.detect-pm.outputs.package-manager == 'pnpm'
+      shell: bash
+      run: |
+        if [ -f "package.json" ]; then
+          # Extract packageManager field and get version
+          PACKAGE_MANAGER=$(node -pe "try { JSON.parse(require('fs').readFileSync('package.json', 'utf8')).packageManager || '' } catch(e) { '' }")
+          if [[ "$PACKAGE_MANAGER" =~ pnpm@([0-9]+\.[0-9]+\.[0-9]+) ]]; then
+            PNPM_VERSION="${BASH_REMATCH[1]}"
+            echo "version=$PNPM_VERSION" >> $GITHUB_OUTPUT
+            echo "📌 Using pnpm version from package.json: $PNPM_VERSION"
+          else
+            echo "version=10" >> $GITHUB_OUTPUT
+            echo "📌 Using fallback pnpm version: 10"
+          fi
+        else
+          echo "version=10" >> $GITHUB_OUTPUT
+          echo "📌 Using fallback pnpm version: 10 (no package.json found)"
+        fi
+
     - name: Setup pnpm
       if: steps.detect-pm.outputs.package-manager == 'pnpm'
       uses: pnpm/action-setup@v4
       with:
-        version: "10"
+        version: ${{ steps.pnpm-version.outputs.version }}
         run_install: false
-        cache: false
 
     - name: Cache dependencies
       uses: actions/cache@v4
