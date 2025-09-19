@@ -46,11 +46,12 @@ jobs:
         with:
           node-version: "20"
           registry-url: "https://registry.npmjs.org"
-          cache: ${{ inputs.package-manager == 'npm' && 'npm' || inputs.package-manager == 'yarn' && 'yarn' || inputs.package-manager == 'pnpm' && 'pnpm' || '' }}
-          cache-dependency-path: |
-            package-lock.json
-            yarn.lock
-            pnpm-lock.yaml
+
+      - name: Cache dependencies
+        uses: actions/cache@v4
+        with:
+          path: "**/node_modules"
+          key: ${{ runner.os }}-${{ inputs.package-manager }}-${{ hashFiles('**/package-lock.json', '**/yarn.lock', '**/pnpm-lock.yaml') }}
 
       - name: Install dependencies
         run: |
@@ -100,11 +101,12 @@ jobs:
         with:
           node-version: "20"
           registry-url: "https://registry.npmjs.org"
-          cache: ${{ inputs.package-manager == 'npm' && 'npm' || inputs.package-manager == 'yarn' && 'yarn' || inputs.package-manager == 'pnpm' && 'pnpm' || '' }}
-          cache-dependency-path: |
-            package-lock.json
-            yarn.lock
-            pnpm-lock.yaml
+
+      - name: Cache dependencies
+        uses: actions/cache@v4
+        with:
+          path: "**/node_modules"
+          key: ${{ runner.os }}-${{ inputs.package-manager }}-${{ hashFiles('**/package-lock.json', '**/yarn.lock', '**/pnpm-lock.yaml') }}
 
       - name: Install dependencies
         run: |
