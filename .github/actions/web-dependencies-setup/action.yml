@@ -1,0 +1,99 @@
+name: "Setup Dependencies"
+description: "Setup Node.js, package manager, caching, and install dependencies with self-healing fallbacks"
+inputs:
+  node-version:
+    description: "Node.js version to use"
+    required: false
+    default: "20"
+  package-manager:
+    description: "Package manager to use (auto-detect, npm, yarn, pnpm)"
+    required: false
+    default: "auto-detect"
+  registry-url:
+    description: "NPM registry URL"
+    required: false
+    default: "https://registry.npmjs.org"
+  cache-dependency-path:
+    description: "Path to dependency files for caching"
+    required: false
+    default: "**/package-lock.json **/yarn.lock **/pnpm-lock.yaml"
+
+runs:
+  using: "composite"
+  steps:
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: ${{ inputs.node-version }}
+        registry-url: ${{ inputs.registry-url }}
+
+    - name: Detect package manager
+      id: detect-pm
+      shell: bash
+      run: |
+        if [ "${{ inputs.package-manager }}" != "auto-detect" ]; then
+          echo "package-manager=${{ inputs.package-manager }}" >> $GITHUB_OUTPUT
+          echo "📦 Using specified package manager: ${{ inputs.package-manager }}"
+        elif [ -f "pnpm-lock.yaml" ]; then
+          echo "package-manager=pnpm" >> $GITHUB_OUTPUT
+          echo "📦 Detected pnpm (pnpm-lock.yaml found)"
+        elif [ -f "yarn.lock" ]; then
+          echo "package-manager=yarn" >> $GITHUB_OUTPUT
+          echo "📦 Detected yarn (yarn.lock found)"
+        else
+          echo "package-manager=npm" >> $GITHUB_OUTPUT
+          echo "📦 Detected npm (package-lock.json or default)"
+        fi
+
+    - name: Setup pnpm
+      if: steps.detect-pm.outputs.package-manager == 'pnpm'
+      uses: pnpm/action-setup@v4
+      with:
+        version: "10"
+        run_install: false
+        cache: false
+
+    - name: Cache dependencies
+      uses: actions/cache@v4
+      with:
+        path: |
+          ~/.npm
+          ~/.yarn
+          ~/.cache/pnpm
+          **/node_modules
+        key: ${{ runner.os }}-${{ steps.detect-pm.outputs.package-manager }}-${{ hashFiles(inputs.cache-dependency-path) }}
+        restore-keys: |
+          ${{ runner.os }}-${{ steps.detect-pm.outputs.package-manager }}-
+
+    - name: Install dependencies with self-healing
+      shell: bash
+      run: |
+        set -e
+        PM="${{ steps.detect-pm.outputs.package-manager }}"
+
+        if [ "$PM" = "pnpm" ]; then
+          echo "🔧 Installing dependencies with pnpm..."
+          if ! pnpm install --frozen-lockfile; then
+            echo "⚠️ Frozen lockfile installation failed, falling back to regular install..."
+            pnpm install
+          fi
+        elif [ "$PM" = "yarn" ]; then
+          echo "🔧 Installing yarn and dependencies..."
+          npm install -g yarn
+          if ! yarn install --frozen-lockfile; then
+            echo "⚠️ Frozen lockfile installation failed, falling back to regular install..."
+            yarn install
+          fi
+        else
+          echo "🔧 Installing npm dependencies..."
+          if ! npm ci; then
+            echo "⚠️ CI installation failed, falling back to regular install..."
+            npm install
+          fi
+        fi
+        echo "✅ Dependencies installed successfully"
+
+outputs:
+  package-manager:
+    description: "The detected or specified package manager"
+    value: ${{ steps.detect-pm.outputs.package-manager }}

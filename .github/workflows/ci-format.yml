@@ -35,36 +35,10 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Setup pnpm
-        if: inputs.package-manager == 'pnpm'
-        uses: pnpm/action-setup@v4
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v5
+      - name: Setup Dependencies
+        uses: ./.github/actions/web-dependencies-setup
         with:
-          node-version: "20"
-          registry-url: "https://registry.npmjs.org"
-
-      - name: Cache dependencies
-        uses: actions/cache@v4
-        with:
-          path: "**/node_modules"
-          key: ${{ runner.os }}-${{ inputs.package-manager }}-${{ hashFiles('**/package-lock.json', '**/yarn.lock', '**/pnpm-lock.yaml') }}
-
-      - name: Install dependencies
-        run: |
-          set -e
-          if [ "${{ inputs.package-manager }}" = "pnpm" ]; then
-            echo "Installing dependencies with pnpm..."
-            pnpm install --frozen-lockfile
-          elif [ "${{ inputs.package-manager }}" = "yarn" ]; then
-            echo "Installing yarn and dependencies..."
-            npm install -g yarn
-            yarn install --frozen-lockfile
-          else
-            echo "Installing npm dependencies..."
-            npm ci
-          fi
+          package-manager: ${{ inputs.package-manager }}
 
       - name: Check formatting
         id: check
@@ -88,36 +62,10 @@ jobs:
         with:
           token: ${{ secrets.workflow-token }}
 
-      - name: Setup pnpm
-        if: inputs.package-manager == 'pnpm'
-        uses: pnpm/action-setup@v4
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v5
+      - name: Setup Dependencies
+        uses: ./.github/actions/web-dependencies-setup
         with:
-          node-version: "20"
-          registry-url: "https://registry.npmjs.org"
-
-      - name: Cache dependencies
-        uses: actions/cache@v4
-        with:
-          path: "**/node_modules"
-          key: ${{ runner.os }}-${{ inputs.package-manager }}-${{ hashFiles('**/package-lock.json', '**/yarn.lock', '**/pnpm-lock.yaml') }}
-
-      - name: Install dependencies
-        run: |
-          set -e
-          if [ "${{ inputs.package-manager }}" = "pnpm" ]; then
-            echo "Installing dependencies with pnpm..."
-            pnpm install --frozen-lockfile
-          elif [ "${{ inputs.package-manager }}" = "yarn" ]; then
-            echo "Installing yarn and dependencies..."
-            npm install -g yarn
-            yarn install --frozen-lockfile
-          else
-            echo "Installing npm dependencies..."
-            npm ci
-          fi
+          package-manager: ${{ inputs.package-manager }}
 
       - name: Run format and commit changes
         run: |
