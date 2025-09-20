@@ -18,11 +18,6 @@ on:
         required: false
         type: string
 
-    secrets:
-      workflow-token:
-        description: "GitHub token for authentication"
-        required: true
-
 permissions:
   contents: read
 
