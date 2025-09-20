@@ -7,6 +7,12 @@ on:
   pull_request:
     branches:
       - main
+
+# Ensure only one formatting run at a time in conjunction with docs workflow
+concurrency:
+  group: repo-updates-${{ github.ref }}
+  cancel-in-progress: false
+
 jobs:
   format:
     name: Code Formatting Check

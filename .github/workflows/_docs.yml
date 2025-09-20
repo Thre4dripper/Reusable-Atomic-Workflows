@@ -23,6 +23,11 @@ permissions:
   contents: write
   pull-requests: write
 
+# Ensure only one documentation update runs at a time in conjunction with format workflow
+concurrency:
+  group: repo-updates-${{ github.ref }}
+  cancel-in-progress: false
+
 jobs:
   detect-changes:
     name: Detect Documentation Changes
@@ -141,21 +146,13 @@ jobs:
               -m "- 📦 Available Workflows" \
               -m "- 🏗️ Workflows Folder Structure"
             
-            # Push to the appropriate branch with error handling
+            # Push to the appropriate branch
             if [ "${{ github.event_name }}" = "pull_request" ]; then
               echo "Pushing documentation to PR branch: ${{ github.head_ref }}"
-              git push origin ${{ github.head_ref }} || {
-                echo "Failed to push to PR branch, retrying..."
-                sleep 3
-                git push origin ${{ github.head_ref }}
-              }
+              git push origin ${{ github.head_ref }}
             else
               echo "Pushing documentation to branch: ${{ github.ref_name }}"
-              git push origin ${{ github.ref_name }} || {
-                echo "Failed to push to branch, retrying..."
-                sleep 3
-                git push origin ${{ github.ref_name }}
-              }
+              git push origin ${{ github.ref_name }}
             fi
             echo "✅ Successfully pushed documentation updates."
           fi
