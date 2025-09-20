@@ -1,4 +1,4 @@
-name: Reusable Unit Tests Worker
+name: Unit Tests Worker
 
 on:
   workflow_call:

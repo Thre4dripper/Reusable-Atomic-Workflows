@@ -1,4 +1,6 @@
-name: Reusable Code Formatter
+# This workflow checks and applies code formatting using a specified package manager and commands.
+
+name: Code Formatter
 
 on:
   workflow_call:

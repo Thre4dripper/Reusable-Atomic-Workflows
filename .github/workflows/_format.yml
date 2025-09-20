@@ -10,7 +10,7 @@ on:
 jobs:
   format:
     name: Code Formatting Check
-    uses: ./.github/workflows/ci-format.yml
+    uses: ./.github/workflows/quality-format.yml
     with:
       package-manager: "pnpm"
       format-check-command: "pnpm run format:check"

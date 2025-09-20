@@ -1,4 +1,4 @@
-name: Reusable Lint Checker
+name: Lint Checker
 
 on:
   workflow_call:

@@ -1,4 +1,4 @@
-name: Reusable TypeScript Type Checker
+name: TypeScript Type Checker
 
 on:
   workflow_call:
