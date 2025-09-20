@@ -26,7 +26,7 @@ jobs:
         with:
           fetch-depth: 0 # Shallow clones should be disabled for a better relevancy of analysis
       - name: "Qodana Scan"
-        uses: JetBrains/qodana-action@master
+        uses: JetBrains/qodana-action@main
         with:
           pr-mode: false
         env:

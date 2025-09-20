@@ -1,0 +1,137 @@
+name: Build Release APK
+
+on:
+  workflow_call:
+    inputs:
+      java-version:
+        description: "Java version to use for building"
+        required: false
+        type: string
+        default: '17'
+      java-distribution:
+        description: "Java distribution to use"
+        required: false
+        type: string
+        default: 'oracle'
+      gradle-cache:
+        description: "Enable Gradle caching"
+        required: false
+        type: boolean
+        default: true
+      checkout-ref:
+        description: "Git reference to checkout"
+        required: false
+        type: string
+        default: 'main'
+      secret-files-artifact-name:
+        description: "Name of the secret files artifact to download"
+        required: false
+        type: string
+        default: ''
+      secret-files-path:
+        description: "Path where secret files should be extracted"
+        required: false
+        type: string
+        default: './app'
+      gradle-build-command:
+        description: "Gradle command to build release APK"
+        required: false
+        type: string
+        default: './gradlew assembleRelease'
+      apk-output-path:
+        description: "Path to the generated release APK file"
+        required: false
+        type: string
+        default: 'app/build/outputs/apk/release/app-release.apk'
+      artifact-name:
+        description: "Name for the uploaded APK artifact"
+        required: false
+        type: string
+        default: 'apk-release'
+      artifact-retention-days:
+        description: "How long to retain the APK artifact"
+        required: false
+        type: number
+        default: 1
+      should-build-condition:
+        description: "Condition to check if build should proceed"
+        required: false
+        type: string
+        default: 'true'
+      include-additional-files:
+        description: "Include additional files with APK upload"
+        required: false
+        type: boolean
+        default: false
+      additional-files-path:
+        description: "Path to additional files to include"
+        required: false
+        type: string
+        default: 'app/play-services.json'
+
+    secrets:
+      release-store-password:
+        description: "Password for the release keystore"
+        required: true
+      release-key-alias:
+        description: "Alias for the release key"
+        required: true
+      release-key-password:
+        description: "Password for the release key"
+        required: true
+
+jobs:
+  build-release-apk:
+    runs-on: ubuntu-latest
+    name: Build Release APK
+    if: ${{ inputs.should-build-condition == 'true' }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          ref: ${{ inputs.checkout-ref }}
+
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: ${{ inputs.java-distribution }}
+          java-version: ${{ inputs.java-version }}
+          cache: ${{ inputs.gradle-cache && 'gradle' || '' }}
+
+      - name: Download secret files
+        if: ${{ inputs.secret-files-artifact-name != '' }}
+        uses: actions/download-artifact@v4
+        with:
+          name: ${{ inputs.secret-files-artifact-name }}
+          path: ${{ inputs.secret-files-path }}
+
+      - name: Export signing environment variables
+        run: |
+          echo "RELEASE_STORE_PASSWORD=${{ secrets.release-store-password }}" >> $GITHUB_ENV
+          echo "RELEASE_KEY_ALIAS=${{ secrets.release-key-alias }}" >> $GITHUB_ENV
+          echo "RELEASE_KEY_PASSWORD=${{ secrets.release-key-password }}" >> $GITHUB_ENV
+
+      - name: Make gradlew executable
+        run: chmod +x gradlew
+
+      - name: Build Release APK
+        run: ${{ inputs.gradle-build-command }}
+
+      - name: Upload Release APK (APK only)
+        if: ${{ !inputs.include-additional-files }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ inputs.artifact-name }}
+          path: ${{ inputs.apk-output-path }}
+          retention-days: ${{ inputs.artifact-retention-days }}
+
+      - name: Upload Release APK (with additional files)
+        if: ${{ inputs.include-additional-files }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ inputs.artifact-name }}
+          path: |
+            ${{ inputs.apk-output-path }}
+            ${{ inputs.additional-files-path }}
+          retention-days: ${{ inputs.artifact-retention-days }}
