@@ -40,42 +40,46 @@ All workflows are designed to be:
 - **Well-documented**: Clear usage instructions and examples
 
 <!-- BEGIN: Available Workflows Section -->
+
 ## 📦 Available Workflows
 
 <!-- AUTO-GENERATED CONTENT - DO NOT EDIT MANUALLY -->
 <!-- This section is automatically updated by the documentation generator -->
 
 > ⚡ **Auto-Generated** ⚡
-> 
-> This section is automatically updated whenever workflows are added, modified, or removed.
-> The documentation reflects the current state of all reusable workflows in this repository.
+>
+> This section is automatically updated whenever workflows are added, modified,
+> or removed. The documentation reflects the current state of all reusable
+> workflows in this repository.
 
 ### 🧪 Testing
 
-| Workflow Name | Description | Inputs | Outputs | Secrets |
-|:-------------|:------------|:-------|:--------|:--------|
-| **[Unit Tests Worker](./.github/workflows/test-unit.yml)** | *No description provided* | `package-manager`<br>`test-command`<br>`coverage-command` | *None* | `workflow-token` |
+| Workflow Name                                              | Description               | Inputs                                                    | Outputs | Secrets          |
+| :--------------------------------------------------------- | :------------------------ | :-------------------------------------------------------- | :------ | :--------------- |
+| **[Unit Tests Worker](./.github/workflows/test-unit.yml)** | _No description provided_ | `package-manager`<br>`test-command`<br>`coverage-command` | _None_  | `workflow-token` |
 
 ### 🔧 Code Quality
 
-| Workflow Name | Description | Inputs | Outputs | Secrets |
-|:-------------|:------------|:-------|:--------|:--------|
-| **[TypeScript Type Checker](./.github/workflows/quality-typecheck.yml)** | *No description provided* | `package-manager` | *None* | *None* |
-| **[Lint Checker](./.github/workflows/quality-lint.yml)** | *No description provided* | `package-manager`<br>`lint-check-command` | *None* | `workflow-token` |
-| **[Code Formatter](./.github/workflows/quality-format.yml)** | This workflow checks and applies code formatting<br>using a specified package manager and commands. | `package-manager`<br>`format-check-command`<br>`format-fix-command` | *None* | `workflow-token` |
+| Workflow Name                                                            | Description                                                                                         | Inputs                                                              | Outputs | Secrets          |
+| :----------------------------------------------------------------------- | :-------------------------------------------------------------------------------------------------- | :------------------------------------------------------------------ | :------ | :--------------- |
+| **[TypeScript Type Checker](./.github/workflows/quality-typecheck.yml)** | _No description provided_                                                                           | `package-manager`                                                   | _None_  | _None_           |
+| **[Lint Checker](./.github/workflows/quality-lint.yml)**                 | _No description provided_                                                                           | `package-manager`<br>`lint-check-command`                           | _None_  | `workflow-token` |
+| **[Code Formatter](./.github/workflows/quality-format.yml)**             | This workflow checks and applies code formatting<br>using a specified package manager and commands. | `package-manager`<br>`format-check-command`<br>`format-fix-command` | _None_  | `workflow-token` |
 
 <!-- END: Available Workflows Section -->
 
 <!-- BEGIN: Workflows Folder Structure Section -->
+
 ## 🏗️ Workflows Folder Structure
 
 <!-- AUTO-GENERATED CONTENT - DO NOT EDIT MANUALLY -->
 <!-- This section is automatically updated by the documentation generator -->
 
 > ⚡ **Auto-Generated** ⚡
-> 
-> This folder structure is automatically scanned and updated to reflect the current repository layout.
-> It shows all workflows and actions with their types (reusable/internal).
+>
+> This folder structure is automatically scanned and updated to reflect the
+> current repository layout. It shows all workflows and actions with their types
+> (reusable/internal).
 
 ```
 .github/
@@ -94,30 +98,8 @@ All workflows are designed to be:
     └── web-dependencies-setup/
         └── action.yml
 ```
+
 <!-- END: Workflows Folder Structure Section -->
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 ## ⚡ Quick Start
 

@@ -71,8 +71,8 @@ uphold this code. Please report unacceptable behavior to
 2. **Clone your fork**
 
    ```bash
-  git clone https://github.com/YOUR_USERNAME/Reusable-Atomic-Workflows.git
-  cd Reusable-Atomic-Workflows
+   git clone https://github.com/YOUR_USERNAME/Reusable-Atomic-Workflows.git
+   cd Reusable-Atomic-Workflows
    ```
 
 3. **Create a branch**

@@ -19,33 +19,33 @@ export interface Workflow {
 
 export type WorkflowInput =
   | {
-    description: string;
-    required: boolean;
-    type: 'string';
-    default?: string;
-    options?: string[];
-  }
+      description: string;
+      required: boolean;
+      type: 'string';
+      default?: string;
+      options?: string[];
+    }
   | {
-    description: string;
-    required: boolean;
-    type: 'number';
-    default?: number;
-    options?: number[];
-  }
+      description: string;
+      required: boolean;
+      type: 'number';
+      default?: number;
+      options?: number[];
+    }
   | {
-    description: string;
-    required: boolean;
-    type: 'boolean';
-    default?: boolean;
-    options?: boolean[];
-  }
+      description: string;
+      required: boolean;
+      type: 'boolean';
+      default?: boolean;
+      options?: boolean[];
+    }
   | {
-    description: string;
-    required: boolean;
-    type: 'choice';
-    default?: string;
-    options?: string[];
-  };
+      description: string;
+      required: boolean;
+      type: 'choice';
+      default?: string;
+      options?: string[];
+    };
 
 export interface WorkflowSecret {
   description: string;
@@ -96,14 +96,16 @@ export async function scanWorkflows(): Promise<Workflow[]> {
       const workflow = parse(content);
 
       const workflowInfo: Workflow = {
-        name: workflow.name.replace(/Reusable[ .]/i, "") || path.basename(filePath, path.extname(filePath)),
+        name:
+          workflow.name.replace(/Reusable[ .]/i, '') ||
+          path.basename(filePath, path.extname(filePath)),
         description: getWorkflowDescription(content),
         filePath,
         fileName: path.basename(filePath),
         inputs: workflow.on?.workflow_call?.inputs,
         secrets: workflow.on?.workflow_call?.secrets,
         outputs: workflow.on?.workflow_call?.outputs,
-        isReusable: workflow.on && 'workflow_call' in workflow.on
+        isReusable: workflow.on && 'workflow_call' in workflow.on,
       };
 
       workflows.push(workflowInfo);
