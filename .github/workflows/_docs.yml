@@ -1,0 +1,161 @@
+# Automatically generates and updates documentation when workflows change
+
+name: Documentation Generator
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - '.github/workflows/**'
+      - '.github/actions/**'
+      - 'src/**'
+  pull_request:
+    branches:
+      - main
+    paths:
+      - '.github/workflows/**'
+      - '.github/actions/**'
+      - 'src/**'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  detect-changes:
+    name: Detect Documentation Changes
+    runs-on: ubuntu-latest
+    outputs:
+      needs-update: ${{ steps.check.outputs.needs-update }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Dependencies
+        uses: ./.github/actions/web-dependencies-setup
+        with:
+          package-manager: pnpm
+
+      - name: Generate documentation
+        id: check
+        run: |
+          echo "Generating documentation to check for changes..."
+          
+          # Store original README content
+          cp README.md README.md.backup
+          
+          # Generate new documentation
+          pnpm run generate-docs
+          
+          # Check if README changed
+          if cmp -s README.md README.md.backup; then
+            echo "Documentation is up to date."
+            echo "needs-update=false" >> $GITHUB_OUTPUT
+          else
+            echo "Documentation needs to be updated."
+            echo "needs-update=true" >> $GITHUB_OUTPUT
+            
+            # Show what changed
+            echo "Changes detected:"
+            diff README.md.backup README.md || true
+          fi
+          
+          # Restore original for next job
+          mv README.md.backup README.md
+
+  generate-docs:
+    name: Generate Documentation
+    needs: detect-changes
+    if: needs.detect-changes.outputs.needs-update == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Setup Dependencies
+        uses: ./.github/actions/web-dependencies-setup
+        with:
+          package-manager: pnpm
+
+      - name: Generate documentation
+        run: |
+          echo "Generating updated documentation..."
+          pnpm run generate-docs
+
+      - name: Verify documentation
+        run: |
+          echo "Verifying generated documentation..."
+          
+          # Check if README was actually updated
+          if git diff --quiet README.md; then
+            echo "No changes in README.md after generation."
+            exit 1
+          fi
+          
+          echo "Documentation successfully generated with changes."
+
+  commit-docs:
+    name: Commit Documentation
+    needs: [detect-changes, generate-docs]
+    if: needs.detect-changes.outputs.needs-update == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Setup Dependencies
+        uses: ./.github/actions/web-dependencies-setup
+        with:
+          package-manager: pnpm
+
+      - name: Regenerate and commit documentation
+        run: |
+          set -e
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git config --global user.name "github-actions[bot]"
+
+          # Generate fresh documentation
+          pnpm run generate-docs
+
+          # Check if there are any changes
+          if git diff --quiet README.md; then
+            echo "No documentation changes to commit."
+          else
+            echo "Committing documentation updates..."
+            
+            # Show what's being committed
+            echo "Documentation changes:"
+            git diff README.md
+            
+            git add README.md
+            git commit -m "📝 Update documentation automatically" \
+              -m "Auto-generated documentation updates based on workflow changes" \
+              -m "" \
+              -m "Updated sections:" \
+              -m "- 📦 Available Workflows" \
+              -m "- 🏗️ Workflows Folder Structure"
+            
+            # Push to the appropriate branch with error handling
+            if [ "${{ github.event_name }}" = "pull_request" ]; then
+              echo "Pushing documentation to PR branch: ${{ github.head_ref }}"
+              git push origin ${{ github.head_ref }} || {
+                echo "Failed to push to PR branch, retrying..."
+                sleep 3
+                git push origin ${{ github.head_ref }}
+              }
+            else
+              echo "Pushing documentation to branch: ${{ github.ref_name }}"
+              git push origin ${{ github.ref_name }} || {
+                echo "Failed to push to branch, retrying..."
+                sleep 3
+                git push origin ${{ github.ref_name }}
+              }
+            fi
+            echo "✅ Successfully pushed documentation updates."
+          fi
