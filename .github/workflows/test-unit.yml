@@ -32,7 +32,7 @@ jobs:
           token: ${{ secrets.workflow-token }}
 
       - name: Setup Dependencies
-        uses: ./.github/actions/web-dependencies-setup
+        uses: Thre4dripper/Reusable-Atomic-Workflows/.github/actions/web-dependencies-setup@main
         with:
           package-manager: ${{ inputs.package-manager }}
 
