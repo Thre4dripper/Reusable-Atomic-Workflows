@@ -39,73 +39,85 @@ All workflows are designed to be:
 - **Efficient**: Optimized for performance and cost
 - **Well-documented**: Clear usage instructions and examples
 
+<!-- BEGIN: Available Workflows Section -->
 ## 📦 Available Workflows
 
-### 🏗️ CI/CD Workflows
+<!-- AUTO-GENERATED CONTENT - DO NOT EDIT MANUALLY -->
+<!-- This section is automatically updated by the documentation generator -->
 
-| Workflow               | Description                                | Supported Languages             |
-| ---------------------- | ------------------------------------------ | ------------------------------- |
-| `build-test-lint`      | Complete build, test, and lint pipeline    | Node.js, Python, Java, Go, .NET |
-| `multi-platform-build` | Build artifacts for multiple platforms     | Universal                       |
-| `semantic-release`     | Automated semantic versioning and releases | Universal                       |
+> ⚡ **Auto-Generated** ⚡
+> 
+> This section is automatically updated whenever workflows are added, modified, or removed.
+> The documentation reflects the current state of all reusable workflows in this repository.
 
-### 🧪 Testing Workflows
+### 🧪 Testing
 
-| Workflow            | Description                            | Features                             |
-| ------------------- | -------------------------------------- | ------------------------------------ |
-| `unit-tests`        | Run unit tests with coverage reporting | Coverage reports, parallel execution |
-| `integration-tests` | End-to-end integration testing         | Database setup, service dependencies |
-| `performance-tests` | Performance and load testing           | Benchmarking, regression detection   |
+| Workflow Name | Description | Inputs | Outputs | Secrets |
+|:-------------|:------------|:-------|:--------|:--------|
+| **[Unit Tests Worker](./.github/workflows/test-unit.yml)** | *No description provided* | `package-manager`<br>`test-command`<br>`coverage-command` | *None* | `workflow-token` |
 
-### 🚀 Deployment Workflows
+### 🔧 Code Quality
 
-| Workflow             | Description                            | Platforms                     |
-| -------------------- | -------------------------------------- | ----------------------------- |
-| `deploy-to-cloud`    | Deploy applications to cloud platforms | AWS, Azure, GCP               |
-| `docker-publish`     | Build and publish Docker images        | Docker Hub, GHCR, ECR         |
-| `static-site-deploy` | Deploy static sites                    | GitHub Pages, Netlify, Vercel |
+| Workflow Name | Description | Inputs | Outputs | Secrets |
+|:-------------|:------------|:-------|:--------|:--------|
+| **[TypeScript Type Checker](./.github/workflows/quality-typecheck.yml)** | *No description provided* | `package-manager` | *None* | *None* |
+| **[Lint Checker](./.github/workflows/quality-lint.yml)** | *No description provided* | `package-manager`<br>`lint-check-command` | *None* | `workflow-token` |
+| **[Code Formatter](./.github/workflows/quality-format.yml)** | This workflow checks and applies code formatting<br>using a specified package manager and commands. | `package-manager`<br>`format-check-command`<br>`format-fix-command` | *None* | `workflow-token` |
 
-### 🔒 Security Workflows
+<!-- END: Available Workflows Section -->
 
-| Workflow           | Description                       | Tools                         |
-| ------------------ | --------------------------------- | ----------------------------- |
-| `security-scan`    | Comprehensive security scanning   | CodeQL, Snyk, OWASP           |
-| `dependency-check` | Check for vulnerable dependencies | Dependabot, npm audit, safety |
-| `secrets-scan`     | Scan for exposed secrets          | TruffleHog, GitGuardian       |
+<!-- BEGIN: Workflows Folder Structure Section -->
+## 🏗️ Workflows Folder Structure
 
-### 🛠️ Utility Workflows
+<!-- AUTO-GENERATED CONTENT - DO NOT EDIT MANUALLY -->
+<!-- This section is automatically updated by the documentation generator -->
 
-| Workflow        | Description                            | Use Case                    |
-| --------------- | -------------------------------------- | --------------------------- |
-| `auto-assign`   | Auto-assign issues and PRs             | Team management             |
-| `label-sync`    | Synchronize labels across repositories | Organization-wide standards |
-| `stale-cleaner` | Clean up stale issues and PRs          | Repository maintenance      |
-
-## 🏗️ Folder Structure
+> ⚡ **Auto-Generated** ⚡
+> 
+> This folder structure is automatically scanned and updated to reflect the current repository layout.
+> It shows all workflows and actions with their types (reusable/internal).
 
 ```
-workflows/
-├── ci-cd/               # Continuous Integration & Deployment
-│   ├── build-test-lint.yml
-│   ├── multi-platform-build.yml
-│   └── semantic-release.yml
-├── testing/             # Testing workflows
-│   ├── unit-tests.yml
-│   ├── integration-tests.yml
-│   └── performance-tests.yml
-├── deployment/          # Deployment workflows
-│   ├── deploy-to-cloud.yml
-│   ├── docker-publish.yml
-│   └── static-site-deploy.yml
-├── security/           # Security workflows
-│   ├── security-scan.yml
-│   ├── dependency-check.yml
-│   └── secrets-scan.yml
-└── utilities/          # Utility workflows
-    ├── auto-assign.yml
-    ├── label-sync.yml
-    └── stale-cleaner.yml
+.github/
+├── workflows/          # GitHub Actions Workflows
+│   ├── # ⚙️ Internal
+│   ├── _format.yml (internal)
+│   │
+│   ├── # 🔧 Code Quality
+│   ├── quality-format.yml (reusable)
+│   ├── quality-lint.yml (reusable)
+│   ├── quality-typecheck.yml (reusable)
+│   │
+│   ├── # 🧪 Testing
+│   ├── test-unit.yml (reusable)
+└── actions/            # Custom Composite Actions
+    └── web-dependencies-setup/
+        └── action.yml
 ```
+<!-- END: Workflows Folder Structure Section -->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 ## ⚡ Quick Start
 
