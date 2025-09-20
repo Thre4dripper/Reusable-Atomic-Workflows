@@ -7,10 +7,9 @@ on:
   pull_request:
     branches:
       - main
-
-# Ensure only one formatting run at a time in conjunction with docs workflow
+# Ensure only one format workflow runs at a time per branch
 concurrency:
-  group: repo-updates-${{ github.ref }}
+  group: format-${{ github.ref }}
   cancel-in-progress: false
 
 jobs:
