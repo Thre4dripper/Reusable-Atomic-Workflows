@@ -1,3 +1,5 @@
+# This workflow checks TypeScript types using a specified package manager.
+
 name: TypeScript Type Checker
 
 on:

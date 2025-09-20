@@ -1,3 +1,5 @@
+# This workflow checks linting using a specified package manager and command.
+
 name: Lint Checker
 
 on:

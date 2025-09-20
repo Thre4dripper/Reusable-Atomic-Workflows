@@ -1,3 +1,5 @@
+# This workflow runs unit tests using a specified package manager and commands.
+
 name: Unit Tests Worker
 
 on:
