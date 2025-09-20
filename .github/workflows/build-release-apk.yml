@@ -1,3 +1,5 @@
+# Generate a release APK for an Android project using customizable inputs.
+
 name: Build Release APK
 
 on:
