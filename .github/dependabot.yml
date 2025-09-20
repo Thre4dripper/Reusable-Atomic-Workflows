@@ -1,0 +1,31 @@
+# .github/dependabot.yml
+
+version: 2
+updates:
+    # For JavaScript/TypeScript dependencies managed by pnpm (or npm/yarn)
+    - package-ecosystem: 'npm' # Use npm ecosystem for Yarn
+      directory: '/' # Root directory with package.json
+      schedule:
+          interval: 'weekly'
+      commit-message:
+          prefix: 'deps'
+      open-pull-requests-limit: 1 # Ensures only one open PR at a time for this ecosystem
+      rebase-strategy: 'auto' # Updates the same PR with newer dependency versions
+      labels:
+          - 'dependencies'
+          - 'pnpm'
+          - 'typescript'
+          - 'frontend'
+
+    # GitHub Actions dependencies (if applicable)
+    - package-ecosystem: 'github-actions'
+      directory: '/' # Default directory for workflows
+      schedule:
+          interval: 'weekly'
+      commit-message:
+          prefix: 'deps'
+      open-pull-requests-limit: 1 # Only one open PR for GitHub Actions dependencies
+      rebase-strategy: 'auto' # Updates the same PR with newer versions
+      labels:
+          - 'dependencies'
+          - 'github-actions'

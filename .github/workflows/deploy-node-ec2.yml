@@ -1,0 +1,141 @@
+# Deploys a Node.js application to AWS EC2 using SSH with build verification
+
+name: EC2 Deployment
+
+on:
+  workflow_call:
+    inputs:
+      node-version:
+        description: "Node.js version to use"
+        required: false
+        type: string
+        default: '20'
+      package-manager:
+        description: "Package manager to use (npm, yarn, pnpm)"
+        required: true
+        type: string
+      install-command:
+        description: "Command to install dependencies"
+        required: true
+        type: string
+      build-command:
+        description: "Command to build the application"
+        required: true
+        type: string
+      build-output-dir:
+        description: "Directory where build output is generated"
+        required: true
+        type: string
+      repository-url:
+        description: "Git repository URL to clone on EC2"
+        required: true
+        type: string
+      deploy-directory:
+        description: "Directory name to clone into on EC2"
+        required: true
+        type: string
+      pm2-app-name:
+        description: "PM2 application name for restart"
+        required: true
+        type: string
+      pre-deploy-cleanup:
+        description: "Additional cleanup commands to run before deployment"
+        required: false
+        type: string
+        default: ''
+
+    secrets:
+      ssh-private-key:
+        description: "SSH private key for EC2 access"
+        required: true
+      ec2-public-ip:
+        description: "Public IP address of the EC2 instance"
+        required: true
+      env-file:
+        description: "Environment file content to deploy"
+        required: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    name: Build Application
+    outputs:
+      should_deploy: ${{ steps.set_output.outputs.should_deploy }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Dependencies
+        uses: ./.github/actions/web-dependencies-setup
+        with:
+          package-manager: ${{ inputs.package-manager }}
+
+      - name: Build application
+        run: ${{ inputs.build-command }}
+
+      - name: Verify build output
+        run: |
+          if [ -d "${{ inputs.build-output-dir }}" ]; then
+              echo "✅ Build successful - ${{ inputs.build-output-dir }} directory found"
+              ls -la ${{ inputs.build-output-dir }}
+          else
+              echo "❌ Build failed - ${{ inputs.build-output-dir }} directory not found"
+              exit 1
+          fi
+
+      - name: Set deployment flag
+        id: set_output
+        if: success()
+        run: echo "should_deploy=true" >> $GITHUB_OUTPUT
+
+  deploy:
+    runs-on: ubuntu-latest
+    needs: build
+    name: Deploy to EC2
+    if: needs.build.outputs.should_deploy == 'true'
+    steps:
+      - name: Setup SSH key
+        run: |
+          rm -rf ~/.ssh
+          touch ssh_key.pem
+          echo "${{ secrets.ssh-private-key }}" > ssh_key.pem
+          chmod 600 ssh_key.pem
+
+      - name: Create SSH directory
+        run: mkdir -p ~/.ssh
+
+      - name: Add EC2 to known_hosts
+        run: |
+          ssh-keyscan -H ${{ secrets.ec2-public-ip }} >> ~/.ssh/known_hosts
+
+      - name: Pre-deployment cleanup
+        run: |
+          ssh -i ssh_key.pem ubuntu@${{ secrets.ec2-public-ip }} "\
+            sudo rm -rf ~/.npm/_logs/* && \
+            sudo rm -rf /var/log/*.log && \
+            sudo rm -rf /tmp/* && \
+            ${{ inputs.pre-deploy-cleanup }}"
+
+      - name: Deploy application
+        run: |
+          ssh -i ssh_key.pem ubuntu@${{ secrets.ec2-public-ip }} "\
+            rm -rf ${{ inputs.deploy-directory }} && \
+            git clone ${{ inputs.repository-url }} ${{ inputs.deploy-directory }} && \
+            cd ${{ inputs.deploy-directory }} && \
+            source ~/.nvm/nvm.sh && \
+            ${{ inputs.install-command }} && \
+            ${{ inputs.build-command }} && \
+            pm2 restart ${{ inputs.pm2-app-name }}"
+
+      - name: Deploy environment file
+        run: |
+          ssh -i ssh_key.pem ubuntu@${{ secrets.ec2-public-ip }} "\
+            cd ${{ inputs.deploy-directory }} && \
+            if [ ! -z '${{ secrets.env-file }}' ]; then echo '${{ secrets.env-file }}' > .env; fi"
+
+      - name: Verify deployment
+        run: |
+          echo "✅ Deployment completed successfully"
+          echo "📦 Repository: ${{ inputs.repository-url }}"
+          echo "📁 Deploy directory: ${{ inputs.deploy-directory }}"
+          echo "🚀 PM2 app: ${{ inputs.pm2-app-name }}"
