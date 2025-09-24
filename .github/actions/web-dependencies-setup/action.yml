@@ -81,9 +81,7 @@ runs:
           ~/.yarn
           ~/.cache/pnpm
           **/node_modules
-        key: ${{ runner.os }}-${{ steps.detect-pm.outputs.package-manager }}-${{ hashFiles(inputs.cache-dependency-path) }}
-        restore-keys: |
-          ${{ runner.os }}-${{ steps.detect-pm.outputs.package-manager }}-
+        key: ${{ runner.os }}-${{ steps.detect-pm.outputs.package-manager }}-${{ hashFiles(format('{0}', inputs.cache-dependency-path)) }}
 
     - name: Install dependencies with self-healing
       shell: bash
