@@ -13,10 +13,6 @@ inputs:
     description: "NPM registry URL"
     required: false
     default: "https://registry.npmjs.org"
-  cache-dependency-path:
-    description: "Path to dependency files for caching"
-    required: false
-    default: "**/package-lock.json **/yarn.lock **/pnpm-lock.yaml"
 
 runs:
   using: "composite"
@@ -73,6 +69,24 @@ runs:
         version: ${{ steps.pnpm-version.outputs.version }}
         run_install: false
 
+    - name: Detect lock file
+      id: detect-lockfile
+      shell: bash
+      run: |
+        if [ -f "pnpm-lock.yaml" ]; then
+          echo "lockfile=pnpm-lock.yaml" >> $GITHUB_OUTPUT
+          echo "📋 Using pnpm-lock.yaml for cache key"
+        elif [ -f "yarn.lock" ]; then
+          echo "lockfile=yarn.lock" >> $GITHUB_OUTPUT
+          echo "📋 Using yarn.lock for cache key"
+        elif [ -f "package-lock.json" ]; then
+          echo "lockfile=package-lock.json" >> $GITHUB_OUTPUT
+          echo "📋 Using package-lock.json for cache key"
+        else
+          echo "lockfile=package.json" >> $GITHUB_OUTPUT
+          echo "📋 Using package.json for cache key (no lock file found)"
+        fi
+
     - name: Cache dependencies
       uses: actions/cache@v4
       with:
@@ -81,7 +95,9 @@ runs:
           ~/.yarn
           ~/.cache/pnpm
           **/node_modules
-        key: ${{ runner.os }}-${{ steps.detect-pm.outputs.package-manager }}-${{ hashFiles(format('{0}', inputs.cache-dependency-path)) }}
+        key: ${{ runner.os }}-${{ steps.detect-pm.outputs.package-manager }}-${{ hashFiles(steps.detect-lockfile.outputs.lockfile) }}
+        restore-keys: |
+          ${{ runner.os }}-${{ steps.detect-pm.outputs.package-manager }}-
 
     - name: Install dependencies with self-healing
       shell: bash
