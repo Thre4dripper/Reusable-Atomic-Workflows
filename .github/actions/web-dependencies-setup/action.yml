@@ -75,7 +75,7 @@ runs:
       run: |
         PM="${{ steps.detect-pm.outputs.package-manager }}"
         OS="${{ runner.os }}"
-        
+
         if [ "$PM" = "pnpm" ] && [ -f "pnpm-lock.yaml" ]; then
           HASH=$(sha256sum pnpm-lock.yaml package.json | sha256sum | cut -d' ' -f1)
           echo "📋 Using pnpm-lock.yaml + package.json for cache key"
@@ -89,7 +89,7 @@ runs:
           HASH=$(sha256sum package.json | cut -d' ' -f1)
           echo "📋 Using package.json only for cache key"
         fi
-        
+
         CACHE_KEY="${OS}-${PM}-${HASH}"
         echo "cache-key=${CACHE_KEY}" >> $GITHUB_OUTPUT
         echo "🔑 Cache key: ${CACHE_KEY}"
